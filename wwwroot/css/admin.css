@@ -1,0 +1,29 @@
+/* TinyMCE: açılır menü ve diyaloglar sabit sidebar / üst çubuğun üstünde */
+.tox-tinymce-aux,
+.tox-silver-sink,
+.tox-menu,
+.tox-dialog-wrap,
+.tox-dialog,
+.tox-collection,
+.tox-pop,
+.tox-toolbar__overflow {
+  z-index: 200000 !important;
+}
+
+#admin-toast-container {
+  pointer-events: none;
+}
+
+.admin-toast {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.admin-toast.admin-toast--in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.admin-serp-preview__title {
+  font-family: Arial, Helvetica, sans-serif;
+}

@@ -1,0 +1,173 @@
+/* Ek stiller — Tailwind app.css ile birlikte */
+
+/* 100vw / tam genişlik breakout kalıntılarında yatay kaydırmayı engelle */
+html {
+  overflow-x: hidden;
+}
+
+/* Tasarım dili — Tailwind tema ile uyumlu (primary, radius, gölge) */
+:root {
+  --fk-color-primary: #0096c7;
+  --fk-color-primary-dark: #0077a0;
+  --fk-color-slate-50: #f8fafc;
+  --fk-color-slate-100: #f1f5f9;
+  --fk-color-slate-600: #475569;
+  --fk-color-slate-900: #0f172a;
+  --fk-radius-xl: 0.75rem;
+  --fk-radius-2xl: 1rem;
+  --fk-shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.06);
+  --fk-ring-slate: rgb(226 232 240 / 0.8);
+  --fk-backdrop: rgb(15 23 42 / 0.4);
+  --fk-backdrop-blur: 12px;
+  --fk-hero-fade-duration: 1.35s;
+  --fk-hero-search-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Ana sayfa hero arama çubuğu — overlap, gölge, tam beyaz */
+.fk-hero-search {
+  background-color: #ffffff;
+  border-radius: var(--fk-radius-2xl);
+  box-shadow: var(--fk-hero-search-shadow);
+}
+
+.fk-hero-search-wrap {
+  position: relative;
+  z-index: 99;
+}
+
+/* Form gönder düğmesi — devre dışı geri bildirim */
+.btn:disabled,
+button.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hero: arka plan slayt geçişleri (fade) */
+.fk-hero-slide {
+  opacity: 0;
+  transition: opacity var(--fk-hero-fade-duration) ease-in-out;
+}
+
+.fk-hero-slide.is-active {
+  opacity: 1;
+}
+
+/* Ana sayfa promosyon modalı */
+.fk-promo-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  margin: 0;
+  max-height: 100%;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 1rem;
+  background: transparent;
+  box-sizing: border-box;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.fk-promo-dialog[open] {
+  display: flex;
+}
+
+.fk-promo-dialog::backdrop {
+  background: var(--fk-backdrop);
+  -webkit-backdrop-filter: blur(var(--fk-backdrop-blur));
+  backdrop-filter: blur(var(--fk-backdrop-blur));
+}
+
+.fk-promo-dialog-panel {
+  box-shadow: var(--fk-shadow-lg);
+  border-radius: var(--fk-radius-2xl);
+}
+
+/* Google Translate: varsayılan çerçeve/banner gizle, gövde kaymasını sıfırla */
+.goog-te-banner-frame,
+body > .skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+.gt-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.gt-hidden select,
+.gt-hidden .goog-te-combo {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Yatay kart şeridi: ince scrollbar */
+.hide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225) transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  height: 7px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(203 213 225);
+  border-radius: 9999px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(148 163 184);
+}
+
+/* Görsel lightbox: dialog + flex ile tam ortada (fixed + translate çakışmasını önler) */
+.site-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  margin: 0;
+  max-height: 100%;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 1rem;
+  background: transparent;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.site-image-lightbox[open] {
+  display: flex;
+}
+
+.site-image-lightbox::backdrop {
+  background: rgba(15, 23, 42, 0.55);
+  -webkit-backdrop-filter: blur(var(--fk-backdrop-blur));
+  backdrop-filter: blur(var(--fk-backdrop-blur));
+}
