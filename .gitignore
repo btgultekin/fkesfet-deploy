@@ -1,0 +1,12 @@
+# Build artifacts
+**/bin/
+**/obj/
+
+# User/IDE files
+**/.vs/
+**/*.user
+**/*.suo
+
+# Sensitive config files
+**/appsettings.json
+**/appsettings.*.json
