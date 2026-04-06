@@ -44,7 +44,10 @@
         var token = csrfToken();
         input.disabled = true;
 
-        fetch('/yonetimfk/MediaAdmin/UploadContentImage', {
+        var uploadUrl = typeof window.adminUrl === 'function'
+            ? window.adminUrl('/yonetimfk/MediaAdmin/UploadContentImage')
+            : '/yonetimfk/MediaAdmin/UploadContentImage';
+        fetch(uploadUrl, {
             method: 'POST',
             body: fd,
             headers: token ? { RequestVerificationToken: token } : {}
