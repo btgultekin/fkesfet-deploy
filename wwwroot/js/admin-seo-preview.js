@@ -8,8 +8,6 @@
         slugMax: 90,
         keywordsMax: 10
     };
-    var BRAND_SUFFIX = ' | Fethiye Kesfet';
-
     var STOP_WORDS = {
         ve: true, veya: true, ile: true, gibi: true, bir: true, bu: true, için: true, olarak: true,
         daha: true, çok: true, en: true, da: true, de: true, ki: true, mi: true, mu: true, mü: true,
@@ -97,15 +95,22 @@
         return normalized.slice(0, max).trim();
     }
 
-    function buildMetaTitle(title) {
+    function buildMetaTitle(title, suffix) {
         var cleanTitle = normalizeText(title);
         if (!cleanTitle) return '';
+        var cleanSuffix = normalizeText(suffix);
 
-        // Prefer including brand while staying in the common SERP title window.
-        if ((cleanTitle + BRAND_SUFFIX).length <= SEO_LIMITS.titleMax) {
-            return cleanTitle + BRAND_SUFFIX;
+        // Keep full meaning in admin auto-fill; preview already truncates visually.
+        if (!cleanSuffix) return cleanTitle;
+
+        if (cleanTitle.toLowerCase().endsWith(cleanSuffix.toLowerCase())) {
+            return cleanTitle;
         }
-        return clampWordBoundary(cleanTitle, SEO_LIMITS.titleMax);
+
+        if ((cleanTitle + cleanSuffix).length <= SEO_LIMITS.titleMax) {
+            return cleanTitle + cleanSuffix;
+        }
+        return cleanTitle;
     }
 
     function buildMetaDescription(contentText, titleText) {
@@ -214,7 +219,8 @@
         }
 
         var plainDescription = getDescriptionSource(card, fallbackEl);
-        setIfAuto(metaTitleEl, state, 'metaTitle', buildMetaTitle(fallbackTitle));
+        var defaultTitleSuffix = card.getAttribute('data-default-title-suffix') || '';
+        setIfAuto(metaTitleEl, state, 'metaTitle', buildMetaTitle(fallbackTitle, defaultTitleSuffix));
         setIfAuto(slugEl, state, 'slug', truncate(slugify(fallbackTitle), SEO_LIMITS.slugMax));
         setIfAuto(metaDescEl, state, 'metaDesc', buildMetaDescription(plainDescription, fallbackTitle));
         setIfAuto(metaKeywordsEl, state, 'metaKeywords', buildMetaKeywords(plainDescription, fallbackTitle));
