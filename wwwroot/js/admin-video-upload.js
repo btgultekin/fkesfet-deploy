@@ -17,8 +17,23 @@
     function fallbackErrorMessage(status) {
         if (status === 401 || status === 403) return 'Yetkiniz yok. Oturumu yenileyip tekrar deneyin.';
         if (status === 413) return 'Video çok büyük. En fazla 80 MB MP4 yükleyebilirsiniz.';
+        if (status === 400) return 'Video gecersiz veya eksik gonderildi. Farkli bir MP4 dosyasi deneyin.';
         if (status >= 500) return 'Sunucu hatası oluştu. Lütfen tekrar deneyin.';
         return 'Video yükleme başarısız.';
+    }
+
+    function pickErrorMessage(body, status) {
+        if (!body) return fallbackErrorMessage(status);
+        if (body.error) return body.error;
+        if (body.detail) return body.detail;
+        if (body.title) return body.title;
+        if (body.errors) {
+            var firstKey = Object.keys(body.errors)[0];
+            if (firstKey && body.errors[firstKey] && body.errors[firstKey].length) {
+                return body.errors[firstKey][0];
+            }
+        }
+        return fallbackErrorMessage(status);
     }
 
     function setUploadStatus(input, message, tone) {
@@ -68,15 +83,15 @@
             .then(function (r) {
                 var ct = r.headers.get('content-type') || '';
                 if (ct.indexOf('application/json') === -1) {
-                    return { ok: false, body: { error: fallbackErrorMessage(r.status) } };
+                    return { ok: false, status: r.status, body: { error: fallbackErrorMessage(r.status) } };
                 }
                 return r.json().then(function (body) {
-                    return { ok: r.ok, body: body };
+                    return { ok: r.ok, status: r.status, body: body };
                 });
             })
             .then(function (res) {
                 if (!res.ok || !res.body.success) {
-                    var msg = (res.body && res.body.error) || 'Yükleme başarısız.';
+                    var msg = pickErrorMessage(res.body, res.status);
                     setUploadStatus(input, msg, 'error');
                     if (window.adminToast && window.adminToast.show) window.adminToast.show('error', msg);
                     else alert(msg);
