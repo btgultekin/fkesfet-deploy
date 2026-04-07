@@ -1,0 +1,33 @@
+.news-article-content figure {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.news-article-content figure img,
+.news-article-content figure video,
+.news-article-content figure iframe {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: min(100%, 920px);
+    width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+}
+
+.news-article-content figure iframe {
+    aspect-ratio: 16 / 9;
+    min-height: 220px;
+    border: 0;
+}
+
+@media (max-width: 640px) {
+    .news-article-content figure img,
+    .news-article-content figure video,
+    .news-article-content figure iframe {
+        max-width: 100%;
+        width: 100%;
+        border-radius: 0.625rem;
+    }
+}

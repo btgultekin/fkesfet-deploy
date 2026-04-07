@@ -41,7 +41,6 @@
             window.adminToast.show(type, message);
             return;
         }
-        if (type === 'error') window.alert(message);
     }
 
     function fmtBytes(n) {
@@ -468,8 +467,13 @@
                     var msg =
                         'Bu dosya(lar) içerikte kullanılıyor. Silmek istediğinize emin misiniz?\n\n' +
                         lines.join('\n');
-                    if (window.confirm(msg)) {
-                        deletePaths(paths, true);
+                    if (typeof window.adminConfirm === 'function') {
+                        window.adminConfirm({
+                            title: 'Kullanımdaki dosyayı silmek istiyor musunuz?',
+                            text: msg
+                        }).then(function (ok) {
+                            if (ok) deletePaths(paths, true);
+                        });
                     }
                     return;
                 }
@@ -551,7 +555,15 @@
                 showToast('error', 'Önce dosya seçin.');
                 return;
             }
-            if (!window.confirm(keys.length + ' dosyayı silmek istediğinize emin misiniz?')) return;
+            if (typeof window.adminConfirm === 'function') {
+                window.adminConfirm({
+                    title: 'Toplu silme onayı',
+                    text: keys.length + ' dosyayı silmek istediğinize emin misiniz?'
+                }).then(function (ok) {
+                    if (ok) deletePaths(keys, false);
+                });
+                return;
+            }
             deletePaths(keys, false);
         });
     }

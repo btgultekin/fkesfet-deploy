@@ -94,7 +94,6 @@
                     var msg = pickErrorMessage(res.body, res.status);
                     setUploadStatus(input, msg, 'error');
                     if (window.adminToast && window.adminToast.show) window.adminToast.show('error', msg);
-                    else alert(msg);
                     return;
                 }
                 setUrlInput(setId, res.body.url);
@@ -106,7 +105,6 @@
             .catch(function () {
                 setUploadStatus(input, 'Ag hatasi.', 'error');
                 if (window.adminToast && window.adminToast.show) window.adminToast.show('error', 'Ağ hatası.');
-                else alert('Ağ hatası.');
             })
             .finally(function () {
                 input.disabled = false;

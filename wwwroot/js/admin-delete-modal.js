@@ -5,6 +5,7 @@
     var titleEl;
     var textEl;
     var formToSubmit;
+    var confirmResolver;
 
     function ensureModal() {
         if (modal) return;
@@ -20,14 +21,25 @@
             modal.classList.add('hidden');
             modal.setAttribute('aria-hidden', 'true');
             formToSubmit = null;
+            if (confirmResolver) {
+                var resolver = confirmResolver;
+                confirmResolver = null;
+                resolver(false);
+            }
         }
 
         function confirmDelete() {
-            if (!formToSubmit) return;
             var f = formToSubmit;
+            var resolver = confirmResolver;
             formToSubmit = null;
-            close();
-            HTMLFormElement.prototype.submit.call(f);
+            confirmResolver = null;
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            if (f) {
+                HTMLFormElement.prototype.submit.call(f);
+                return;
+            }
+            if (resolver) resolver(true);
         }
 
         if (overlay) overlay.addEventListener('click', close);
@@ -41,9 +53,8 @@
     function openForForm(form) {
         ensureModal();
         if (!modal || !titleEl || !textEl) {
-            if (window.confirm('Silmek istediğinize emin misiniz?')) {
-                HTMLFormElement.prototype.submit.call(form);
-            }
+            // Layout modalı beklenir; bulunamazsa da native confirm kullanmadan devam eder.
+            HTMLFormElement.prototype.submit.call(form);
             return;
         }
         formToSubmit = form;
@@ -55,6 +66,21 @@
         if (confirmBtn) confirmBtn.focus();
     }
 
+    function openForConfirm(options) {
+        ensureModal();
+        if (!modal || !titleEl || !textEl) return Promise.resolve(true);
+        options = options || {};
+        titleEl.textContent = options.title || 'İşlemi onaylıyor musunuz?';
+        textEl.textContent = options.text || 'Bu işlem geri alınamaz.';
+        modal.classList.remove('hidden');
+        modal.setAttribute('aria-hidden', 'false');
+        var confirmBtn = modal.querySelector('[data-admin-delete-confirm]');
+        if (confirmBtn) confirmBtn.focus();
+        return new Promise(function (resolve) {
+            confirmResolver = resolve;
+        });
+    }
+
     document.addEventListener('submit', function (e) {
         var t = e.target;
         if (!(t instanceof HTMLFormElement)) return;
@@ -62,4 +88,6 @@
         e.preventDefault();
         openForForm(t);
     });
+
+    window.adminConfirm = openForConfirm;
 })();
