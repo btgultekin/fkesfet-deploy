@@ -1,6 +1,46 @@
 (function () {
     'use strict';
 
+    window.googleTranslateElementInit = function () {
+        if (!window.google || !window.google.translate) return;
+        new window.google.translate.TranslateElement(
+            {
+                pageLanguage: 'tr',
+                includedLanguages: 'en,tr',
+                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            },
+            'google_translate_element'
+        );
+    };
+
+    var translateScriptRequested = false;
+    function loadGoogleTranslateScript() {
+        if (translateScriptRequested) return;
+        translateScriptRequested = true;
+        var s = document.createElement('script');
+        s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        s.async = true;
+        document.body.appendChild(s);
+    }
+
+    function scheduleTranslateIfEnglishPreferred() {
+        var g = getGoogTransCookie();
+        var isEn = g.indexOf('/en') !== -1 || g.endsWith('en');
+        if (!isEn) return;
+        var ric = window.requestIdleCallback || function (cb) {
+            return window.setTimeout(function () {
+                cb({ didTimeout: false, timeRemaining: function () { return 5; } });
+            }, 800);
+        };
+        ric(
+            function () {
+                loadGoogleTranslateScript();
+            },
+            { timeout: 2800 }
+        );
+    }
+
     function initMobileMenu() {
         var btn = document.getElementById('mobile-menu-btn');
         var panel = document.getElementById('mobile-menu');
@@ -283,6 +323,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         initMobileMenu();
         initLangSwitch();
+        scheduleTranslateIfEnglishPreferred();
         initHeroSlider();
         initHomePromoDialog();
         initImageLightbox();

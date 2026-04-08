@@ -3,9 +3,11 @@
   "private": true,
   "scripts": {
     "build:css": "tailwindcss -i ./wwwroot/css/tailwind.input.css -o ./wwwroot/css/app.css --minify",
-    "watch:css": "tailwindcss -i ./wwwroot/css/tailwind.input.css -o ./wwwroot/css/app.css --watch"
+    "watch:css": "tailwindcss -i ./wwwroot/css/tailwind.input.css -o ./wwwroot/css/app.css --watch",
+    "copy:partytown": "partytown copylib wwwroot/partytown"
   },
   "devDependencies": {
+    "@builder.io/partytown": "^0.10.3",
     "@tailwindcss/typography": "^0.5.15",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
